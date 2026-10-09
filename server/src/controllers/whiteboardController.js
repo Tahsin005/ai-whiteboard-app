@@ -119,4 +119,39 @@ const deleteBoard = asyncHandler(async (req, res) => {
     res.json({ success: true });
 });
 
-export { listBoards, createBoard, getBoard, updateBoard, deleteBoard };
+const addMember = asyncHandler(async(req, res) => {
+    if (req.board.role !== "owner") throw ApiError.forbidden("Only the owner can add members.");
+
+    const email = (req.body.email || '').trim();
+    const role = ["editor", "viewer"].includes(req.body.role) ? req.body.role : "viewer";
+    if (!email) throw ApiError.badRequest("Email is required.");
+
+    const userRes = await query("SELECT id, name, email, avatar_url FROM users WHERE email = $1", [email]);
+    const invitee = userRes.rows[0];
+    if (!invitee) throw ApiError.notFound("No user found with this email.");
+    if (invitee.id === req.board.owner_id) throw ApiError.badRequest("The owner already has full access");
+
+    await query(
+        `INSERT INTO whiteboard_members (whiteboard_id, user_id, role)
+        VALUES ($1, $2, $3)
+        ON CONFLICT (whiteboard_id, user_id) DO UPDATE SET role = EXCLUDED.role`,
+        [req.board.id, invitee.id, role]
+    );
+
+    const member = { ...invitee, role};
+    emitToBoard(req.board.id, "member:added", member);
+    res.status(201).json({ member });
+});
+
+const removeMember = asyncHandler(async(req, res) => {
+    if (req.board.role !== "owner") throw ApiError.forbidden("Only the owner can remove members");
+    await query(
+        `DELETE FROM whiteboard_members
+        WHERE whiteboard_id = $1 AND user_id = $2`,
+        [req.board.id, req.params.userId]
+    );
+    emitToBoard(req.board.id, "member:removed", { userId: req.params.userId });
+    res.json({ success: true });
+});
+
+export { listBoards, createBoard, getBoard, updateBoard, deleteBoard, addMember, removeMember };
