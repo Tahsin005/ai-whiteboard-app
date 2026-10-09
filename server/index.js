@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 
 import { errorHandler, notFoundHandler } from "./src/middleware/errorHandler.js";
+import apiRoutes from "./src/routes/index.js";
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.get("/", (_req, res) => {
         status: "running"
     });
 });
+
+app.use("/api", apiRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
