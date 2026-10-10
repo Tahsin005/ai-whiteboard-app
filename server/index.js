@@ -2,10 +2,11 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import cors from "cors";
+import http from "http";
 
 import { errorHandler, notFoundHandler } from "./src/middleware/errorHandler.js";
 import apiRoutes from "./src/routes/index.js";
-
+import { initSocket } from "./src/socket/index.js";
 const app = express();
 
 app.use(cors({
@@ -28,10 +29,13 @@ app.use("/api", apiRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
+const server = http.createServer(app);
+initSocket(server);
+
 const PORT = process.env.PORT || 5050;
 
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+server.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 export { app };
