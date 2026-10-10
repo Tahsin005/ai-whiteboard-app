@@ -5,6 +5,7 @@ import { createElement, bulkCreate, updateElement, deleteElement } from "../cont
 import { uploadImage as uploadImageController } from "../controllers/uploadController.js";
 import { uploadImage as uploadImageMiddleware } from "../middleware/upload.js";
 import { requireBoardAccess, requireEditAccess } from "../middleware/whiteboardAccess.js";
+import { brainstorm, outline, diagram, chart, editSelection, summary } from "../controllers/aiController.js";
 const router = express.Router();
 
 router.use(requireAuth);
@@ -25,5 +26,12 @@ router.post("/:boardId/elements", requireBoardAccess, requireEditAccess, createE
 router.post("/:boardId/elements/bulk", requireBoardAccess, requireEditAccess, bulkCreate);
 router.patch("/:boardId/elements/:elementId", requireBoardAccess, requireEditAccess, updateElement);
 router.delete("/:boardId/elements/:elementId", requireBoardAccess, requireEditAccess, deleteElement);
+
+router.post("/:boardId/ai/brainstorm", requireBoardAccess, requireEditAccess, brainstorm);
+router.post("/:boardId/ai/outline", requireBoardAccess, requireEditAccess, outline);
+router.post("/:boardId/ai/diagram", requireBoardAccess, requireEditAccess, diagram);
+router.post("/:boardId/ai/chart", requireBoardAccess, requireEditAccess, chart);
+router.post("/:boardId/ai/edit", requireBoardAccess, requireEditAccess, editSelection);
+router.post("/:boardId/ai/summary", requireBoardAccess, summary);
 
 export default router;

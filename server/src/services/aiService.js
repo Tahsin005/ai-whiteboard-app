@@ -31,14 +31,21 @@ const getClient = () => {
                     userPrompt = contents.text || JSON.stringify(contents);
                 }
 
-                const completion = await client.chat.completions.create({
-                    model: model || MODEL,
+                let completion = await client.chat.completions.create({
+                    model: model || MODEL || process.env.AGENTROUTER_MODEL,
                     messages: [{ role: "user", content: userPrompt }],
                     ...(config?.temperature !== undefined ? { temperature: config.temperature } : {}),
                 });
 
-                const message = completion.choices?.[0]?.message;
+                if (typeof completion === "string") {
+                    try {
+                        completion = JSON.parse(completion);
+                    } catch {}
+                }
+
+                const message = completion?.choices?.[0]?.message;
                 const text = message?.content || message?.reasoning_content || "";
+
 
                 return {
                     text,
@@ -69,9 +76,10 @@ const extractJson = (text) => {
 const runPrompt = async (prompt) => {
     try {
         const response = await getClient().models.generateContent({
-            model: MODEL,
+            model: MODEL || process.env.AGENTROUTER_MODEL,
             contents: prompt,
         });
+
         return response.text;
     } catch (err) {
         if (err.isApiError) throw err;
@@ -224,7 +232,7 @@ const summarizeBoard = async ({ boardTitle, notes }) => {
         ? notes.map((t, i) => `${i + 1}. ${t}`).join("\n")
         : "(the board has no text yet)";
 
-    const prompt = `You are a helpful assistant. Summarize the notes on the whiteboard "${boardTitle}".
+    const prompt = `Summarize the notes on the whiteboard "${boardTitle}".
 Notes on the board:
 ${body}
 
