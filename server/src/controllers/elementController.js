@@ -2,6 +2,7 @@ import { query } from "../config/db.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { emitToBoard } from "../realtime/index.js";
 import ApiError from "../utils/ApiError.js";
+import { deleteUploadByUrl } from "../utils/fileCleanup.js";
 
 const VALID_TYPES = [
     "text",
@@ -79,6 +80,7 @@ const deleteElement = asyncHandler(async (req, res) => {
     );
     if (!rows.length) throw ApiError.notFound("Element not found");
     await touchBoard(req.board.id);
+    if (rows[0].type === "image") deleteUploadByUrl(rows[0].data?.src);
 
     emitToBoard(
         req.board.id,

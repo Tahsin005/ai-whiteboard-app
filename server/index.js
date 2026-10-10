@@ -7,6 +7,7 @@ import http from "http";
 import { errorHandler, notFoundHandler } from "./src/middleware/errorHandler.js";
 import apiRoutes from "./src/routes/index.js";
 import { initSocket } from "./src/socket/index.js";
+import { UPLOAD_DIR } from "./src/config/upload.js";
 const app = express();
 
 app.use(cors({
@@ -14,7 +15,9 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(express.json({ limit: "10kb" }));
+app.use(express.json({ limit: "10mb" }));
+
+app.use("/uploads", express.static(UPLOAD_DIR, { maxAge: "30d", immutable: true}))
 
 app.get("/", (_req, res) => {
     res.json({

@@ -2,6 +2,7 @@ import { query } from "../config/db.js";
 import { emitToBoard } from "../realtime/index.js";
 import ApiError from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { deleteUploadByUrl } from "../utils/fileCleanup.js";
 
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
@@ -112,10 +113,13 @@ const updateBoard = asyncHandler(async (req, res) => {
 });
 
 const deleteBoard = asyncHandler(async (req, res) => {
-    if (req.board.role !== "owner") {
-        throw ApiError.forbidden("Only the owner can delete a whiteboard.");
-    }
+    if (req.board.role !== "owner") throw ApiError.forbidden("Only the owner can delete a whiteboard");
+    const imgs = await query(
+        "SELECT data FROM elements WHERE whiteboard_id = $1 AND type = 'image'",
+        [req.board.id]
+    );
     await query("DELETE FROM whiteboards WHERE id = $1", [req.board.id]);
+    imgs.rows.forEach((r) => deleteUploadByUrl(r.data?.src));
     res.json({ success: true });
 });
 
