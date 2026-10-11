@@ -4,7 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 const searchUsers = asyncHandler(async(req, res) => {
     const q = (req.query.q || "").trim();
     if (q.length < 2) return res.json({
-        user: []
+        users: []
     });
 
     const { rows } = await query(
