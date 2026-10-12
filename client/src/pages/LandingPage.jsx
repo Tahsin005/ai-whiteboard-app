@@ -51,13 +51,24 @@ export const LandingPage = () => {
         </p>
 
         <div style={{ marginTop: "36px", display: "flex", gap: "14px" }}>
-          <Link
-            to={isAuthenticated ? "/dashboard" : "/auth/sign-in"}
-            className="btn btn-primary btn-lg"
-          >
-            <span>{isAuthenticated ? "Open Dashboard" : "Get Started Free"}</span>
-            <ArrowRight size={16} />
-          </Link>
+          {isLoading ? (
+            <button
+              className="btn btn-primary btn-lg"
+              disabled
+              style={{ minWidth: "190px" }}
+            >
+              <Loader2 size={16} className="animate-spin-fast" />
+              <span>Checking...</span>
+            </button>
+          ) : (
+            <Link
+              to={isAuthenticated ? "/dashboard" : "/auth/sign-in"}
+              className="btn btn-primary btn-lg"
+            >
+              <span>{isAuthenticated ? "Open Dashboard" : "Get Started Free"}</span>
+              <ArrowRight size={16} />
+            </Link>
+          )}
         </div>
       </main>
     </div>
