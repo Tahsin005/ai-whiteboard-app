@@ -1305,3 +1305,351 @@ a {
   color: var(--brand-700) !important;
   text-decoration: underline !important;
 }
+
+.cursors-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 20;
+}
+
+.cursor-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: transform 0.08s linear;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  will-change: transform;
+}
+
+.cursor-svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transform: translate(-2px, -2px);
+}
+
+.cursor-badge {
+  margin-top: 4px;
+  margin-left: 14px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.canvas-container {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+}
+
+.canvas-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+.canvas-welcome-banner {
+  position: absolute;
+  left: -180px;
+  top: -80px;
+  width: 360px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  pointer-events: auto;
+}
+
+.canvas-welcome-icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 12px;
+  border-radius: var(--radius-md);
+}
+
+.canvas-welcome-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.canvas-welcome-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  line-height: 1.45;
+}
+
+.canvas-element {
+  position: absolute;
+  border: 1.5px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+  font-size: 0.875rem;
+  color: var(--text-main);
+  overflow: hidden;
+}
+
+.canvas-element-text {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.canvas-hint-overlay {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  pointer-events: none;
+}
+
+.canvas-hint-badge {
+  padding: 6px 16px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  box-shadow: var(--shadow-md);
+  pointer-events: auto;
+}
+
+.board-page-shell {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.board-state-center {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.board-error-card {
+  max-width: 440px;
+  text-align: center;
+}
+
+.board-error-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  background: var(--danger-50);
+  color: var(--danger-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.board-error-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.board-error-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.board-error-btn {
+  width: 100%;
+}
+
+.navbar-board {
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.navbar-board-inner {
+  max-width: 100%;
+  padding: 0 18px;
+}
+
+.board-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.board-nav-back-btn {
+  padding: 6px 12px;
+}
+
+.board-nav-back-label {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .board-nav-back-label {
+    display: inline;
+  }
+}
+
+.board-nav-divider {
+  height: 20px;
+  width: 1px;
+  background-color: var(--border-subtle);
+}
+
+.board-nav-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.board-nav-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.board-nav-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.board-nav-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.board-nav-role-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  text-transform: capitalize;
+}
+
+.board-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.presence-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.presence-avatars {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+}
+
+.presence-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: var(--shadow-2xs);
+  margin-left: -8px;
+  position: relative;
+  user-select: none;
+}
+
+.presence-more {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.board-status-badge {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.board-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.board-status-dot.is-live {
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.board-status-dot.is-connecting {
+  background-color: #f59e0b;
+}
+
+.board-status-label-live {
+  color: var(--text-secondary);
+}
+
+.board-status-label-connecting {
+  color: var(--text-muted);
+}
+
+.board-zoom-controls {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  box-shadow: var(--shadow-2xs);
+}
+
+.board-zoom-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board-zoom-level {
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 46px;
+  text-align: center;
+}
