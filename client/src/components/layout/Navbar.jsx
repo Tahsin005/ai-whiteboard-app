@@ -1,16 +1,7 @@
 import { Link, useNavigate } from "react-router";
+import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 import { useAuth } from "@/context/AuthContext.jsx";
-import { PenTool, LogOut, LayoutGrid } from "lucide-react";
-import { Button } from "@/components/ui/button.jsx";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar.jsx";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.jsx";
+import { PenTool, LogOut, LayoutGrid, ChevronDown } from "lucide-react";
 
 export const Navbar = () => {
   const { user, signOut } = useAuth();
@@ -26,61 +17,58 @@ export const Navbar = () => {
     user?.email?.[0]?.toUpperCase() ||
     "U";
 
+  const displayName = user?.name || user?.email?.split("@")[0] || "Account";
+
   return (
-    <header className="sticky top-0 z-30 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-4">
-        <Link to="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
-            <PenTool className="w-3.5 h-3.5" />
+    <header className="navbar">
+      <div className="page-container navbar-inner">
+        <Link to="/dashboard" className="navbar-brand">
+          <div className="navbar-brand-icon">
+            <PenTool size={20} />
           </div>
-          <span className="font-semibold text-sm tracking-tight text-foreground">
-            AI Whiteboard
-          </span>
+          <span className="navbar-brand-text">CanvasAI</span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-9 px-2 gap-2 rounded-full">
-                <Avatar className="h-7 w-7">
-                  <AvatarFallback className="text-xs bg-muted text-muted-foreground font-semibold">
-                    {initial}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="hidden sm:inline-block text-xs font-medium max-w-[140px] truncate text-foreground">
-                  {user?.name || user?.email?.split("@")[0] || "Account"}
-                </span>
-              </Button>
-            </DropdownMenuTrigger>
+        <div className="dropdown-container">
+          <DropdownMenuPrimitive.Root>
+            <DropdownMenuPrimitive.Trigger asChild>
+              <button type="button" className="navbar-user-trigger" aria-label="User menu">
+                <div className="navbar-avatar">{initial}</div>
+                <span className="navbar-username">{displayName}</span>
+                <ChevronDown size={14} color="#64748b" />
+              </button>
+            </DropdownMenuPrimitive.Trigger>
 
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none truncate">
-                    {user?.name || "Account"}
-                  </p>
-                  <p className="text-xs leading-none text-muted-foreground truncate">
-                    {user?.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/dashboard" className="flex items-center gap-2 cursor-pointer">
-                  <LayoutGrid className="w-4 h-4 text-muted-foreground" />
-                  Dashboard
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleSignOut}
-                className="text-destructive focus:text-destructive cursor-pointer"
+            <DropdownMenuPrimitive.Portal>
+              <DropdownMenuPrimitive.Content
+                className="dropdown-menu-custom"
+                align="end"
+                sideOffset={8}
               >
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <div className="dropdown-header-user">
+                  <div className="dropdown-header-name">{user?.name || "Account"}</div>
+                  <div className="dropdown-header-email">{user?.email}</div>
+                </div>
+
+                <DropdownMenuPrimitive.Item asChild>
+                  <Link to="/dashboard" className="dropdown-item-custom">
+                    <LayoutGrid size={16} />
+                    <span>Dashboard</span>
+                  </Link>
+                </DropdownMenuPrimitive.Item>
+
+                <div className="dropdown-divider-custom" />
+
+                <DropdownMenuPrimitive.Item
+                  className="dropdown-item-custom is-danger"
+                  onSelect={handleSignOut}
+                >
+                  <LogOut size={16} />
+                  <span>Sign Out</span>
+                </DropdownMenuPrimitive.Item>
+              </DropdownMenuPrimitive.Content>
+            </DropdownMenuPrimitive.Portal>
+          </DropdownMenuPrimitive.Root>
         </div>
       </div>
     </header>

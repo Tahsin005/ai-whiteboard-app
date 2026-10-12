@@ -2,9 +2,11 @@ import { Loader2 } from "lucide-react";
 
 export const LoadingSpinner = ({ label = "Loading..." }) => {
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-background text-foreground p-4">
-      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-      <p className="mt-3 text-xs text-muted-foreground tracking-wide font-medium">
+    <div className="loading-screen">
+      <div className="loading-spinner-box">
+        <Loader2 size={26} className="animate-spin-fast" />
+      </div>
+      <p className="loading-spinner-label">
         {label}
       </p>
     </div>

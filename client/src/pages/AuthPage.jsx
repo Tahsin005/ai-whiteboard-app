@@ -1,37 +1,50 @@
 import { useParams, Link } from "react-router";
 import { AuthView } from "@neondatabase/auth-ui";
-import { PenTool } from "lucide-react";
+import { PenTool, ArrowLeft } from "lucide-react";
 
 export const AuthPage = () => {
   const { path } = useParams();
   const currentPath = path || "sign-in";
+  const isSignUp = currentPath === "sign-up";
 
   return (
-    <div className="min-h-screen w-full bg-muted/40 text-foreground flex flex-col justify-between">
-      <header className="w-full max-w-5xl mx-auto px-6 py-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
-            <PenTool className="w-4 h-4" />
+    <div className="auth-page">
+      <header className="page-container auth-header">
+        <Link to="/" className="navbar-brand">
+          <div className="navbar-brand-icon">
+            <PenTool size={20} />
           </div>
-          <span className="text-base font-semibold tracking-tight text-foreground">
-            AI Whiteboard
-          </span>
+          <span className="navbar-brand-text">CanvasAI</span>
+        </Link>
+
+        <Link to="/" className="btn btn-ghost btn-sm">
+          <ArrowLeft size={15} />
+          <span>Back to Home</span>
         </Link>
       </header>
 
-      <main className="flex-1 w-full max-w-sm mx-auto px-4 py-8 flex flex-col items-center justify-center">
-        <div className="w-full flex justify-center">
+      <main className="page-container auth-hero-section">
+        <div className="auth-brand-badge">
+          <div className="auth-brand-icon">
+            <PenTool size={24} />
+          </div>
+          <h1 className="auth-title">
+            {isSignUp ? "Create your CanvasAI account" : "Welcome back to CanvasAI"}
+          </h1>
+          <p className="auth-subtitle">
+            {isSignUp
+              ? "Start collaborating with real-time visual canvases in seconds."
+              : "Sign in to access your whiteboards, sketches, and diagrams."}
+          </p>
+        </div>
+
+        <div className="auth-card-wrapper">
           <AuthView
             path={currentPath}
             redirectTo="/dashboard"
-            className="w-full"
           />
         </div>
       </main>
-
-      <footer className="w-full max-w-5xl mx-auto px-6 py-6 text-center text-xs text-muted-foreground">
-        AI Whiteboard App
-      </footer>
     </div>
   );
 };

@@ -1,50 +1,65 @@
 import { Link } from "react-router";
-import { PenTool, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button.jsx";
+import { PenTool, ArrowRight, Sparkles, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext.jsx";
 
 export const LandingPage = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground flex flex-col justify-between">
-      <header className="w-full max-w-5xl mx-auto px-6 py-6 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center shadow-xs">
-            <PenTool className="w-4 h-4" />
+    <div className="app-shell">
+      <header className="page-container landing-header">
+        <div className="navbar-brand">
+          <div className="navbar-brand-icon">
+            <PenTool size={20} />
           </div>
-          <span className="text-base font-semibold tracking-tight">
-            AI Whiteboard
-          </span>
+          <span className="navbar-brand-text">CanvasAI</span>
         </div>
 
         <div>
-          {isAuthenticated ? (
-            <Button asChild size="sm">
-              <Link to="/dashboard">Go to Dashboard</Link>
-            </Button>
+          {isLoading ? (
+            <div
+              className="btn btn-secondary btn-sm"
+              style={{ opacity: 0.7, pointerEvents: "none", minWidth: "84px" }}
+            >
+              <Loader2 size={14} className="animate-spin-fast" />
+            </div>
+          ) : isAuthenticated ? (
+            <Link to="/dashboard" className="btn btn-primary btn-sm">
+              <span>Go to Dashboard</span>
+              <ArrowRight size={14} />
+            </Link>
           ) : (
-            <Button asChild size="sm">
-              <Link to="/auth/sign-in">Sign In</Link>
-            </Button>
+            <Link to="/auth/sign-in" className="btn btn-secondary btn-sm">
+              Sign In
+            </Link>
           )}
         </div>
       </header>
 
-      <main className="flex-1 w-full max-w-3xl mx-auto px-6 py-16 flex flex-col items-center justify-center text-center">
-        <div className="mt-8 flex items-center gap-3">
-          <Button asChild size="lg">
-            <Link to={isAuthenticated ? "/dashboard" : "/auth/sign-in"}>
-              {isAuthenticated ? "Open Dashboard" : "Get Started"}
-              <ArrowRight className="w-4 h-4 ml-1.5" />
-            </Link>
-          </Button>
+      <main className="page-container landing-hero">
+        <div className="badge" style={{ marginBottom: "20px" }}>
+          <Sparkles size={14} color="#6366f1" />
+          <span>Real-time Intelligent Whiteboard</span>
+        </div>
+
+        <h1 className="landing-title">
+          Where ideas take shape at the <span className="landing-gradient-text">speed of thought</span>
+        </h1>
+
+        <p className="landing-desc">
+          Design architectures, sketch diagrams, brainstorm collaboratively, and accelerate your creative workflow.
+        </p>
+
+        <div style={{ marginTop: "36px", display: "flex", gap: "14px" }}>
+          <Link
+            to={isAuthenticated ? "/dashboard" : "/auth/sign-in"}
+            className="btn btn-primary btn-lg"
+          >
+            <span>{isAuthenticated ? "Open Dashboard" : "Get Started Free"}</span>
+            <ArrowRight size={16} />
+          </Link>
         </div>
       </main>
-
-      <footer className="w-full max-w-5xl mx-auto px-6 py-6 text-center text-xs text-muted-foreground border-t border-border/50">
-        AI Whiteboard App
-      </footer>
     </div>
   );
 };

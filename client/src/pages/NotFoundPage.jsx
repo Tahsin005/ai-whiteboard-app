@@ -1,33 +1,49 @@
 import { Link } from "react-router";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button.jsx";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.jsx";
 
 export const NotFoundPage = () => {
   return (
-    <div className="min-h-screen w-full bg-muted/40 text-foreground flex flex-col items-center justify-center p-6 text-center">
-      <Card className="max-w-sm w-full">
-        <CardHeader>
-          <CardTitle className="text-4xl">404</CardTitle>
-          <CardDescription>
-            The page you are looking for does not exist.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button asChild size="sm">
-            <Link to="/dashboard" className="inline-flex items-center gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Return to Dashboard
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
+    <div className="app-shell" style={{ alignItems: "center", justifyContent: "center", padding: "24px" }}>
+      <div className="card-simple" style={{ maxWidth: "400px", textAlign: "center" }}>
+        <h1
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "4rem",
+            fontWeight: 800,
+            color: "var(--brand-600)",
+            lineHeight: 1,
+            letterSpacing: "-0.04em",
+          }}
+        >
+          404
+        </h1>
+        <h2
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "1.25rem",
+            fontWeight: 700,
+            color: "var(--text-main)",
+            marginTop: "12px",
+          }}
+        >
+          Page Not Found
+        </h2>
+        <p
+          style={{
+            fontSize: "0.9rem",
+            color: "var(--text-muted)",
+            marginTop: "8px",
+            marginBottom: "24px",
+          }}
+        >
+          The page you are looking for does not exist or has been moved.
+        </p>
+
+        <Link to="/dashboard" className="btn btn-primary btn-sm" style={{ width: "100%" }}>
+          <ArrowLeft size={16} />
+          <span>Return to Dashboard</span>
+        </Link>
+      </div>
     </div>
   );
 };
