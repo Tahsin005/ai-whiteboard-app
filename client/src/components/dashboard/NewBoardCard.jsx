@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, PenTool } from "lucide-react";
 
 export function NewBoardCard({ onClick }) {
   return (
@@ -8,15 +8,15 @@ export function NewBoardCard({ onClick }) {
       className="new-board-card"
     >
       <div className="new-board-icon">
-        <Plus size={30} />
+        <PenTool size={26} />
       </div>
 
-      <span className="new-board-title">
-        New Whiteboard
+      <span className="new-board-title font-hand">
+        + New Whiteboard
       </span>
 
       <span className="new-board-desc">
-        Start a new blank canvas with dot matrix, grid, or clean styles
+        Start a blank canvas with hand-drawn dots, grid, or clean styles
       </span>
     </button>
   );

@@ -1,7 +1,7 @@
 import express from "express";
 import { requireAuth } from "../middleware/auth.js";
-import { addMember, createBoard, deleteBoard, getBoard, listBoards, removeMember, updateBoard } from "../controllers/whiteboardController.js";
-import { createElement, bulkCreate, updateElement, deleteElement } from "../controllers/elementController.js";
+import { addMember, createBoard, deleteBoard, getBoard, listBoards, removeMember, updateBoard, getBoardFiles, saveBoardFiles } from "../controllers/whiteboardController.js";
+import { createElement, bulkCreate, updateElement, deleteElement, batchUpdateElements, batchDeleteElements } from "../controllers/elementController.js";
 import { uploadImage as uploadImageController } from "../controllers/uploadController.js";
 import { uploadImage as uploadImageMiddleware } from "../middleware/upload.js";
 import { requireBoardAccess, requireEditAccess } from "../middleware/whiteboardAccess.js";
@@ -17,6 +17,9 @@ router.get("/:boardId", requireBoardAccess, getBoard);
 router.patch("/:boardId", requireBoardAccess, requireEditAccess, updateBoard);
 router.delete("/:boardId", requireBoardAccess, deleteBoard);
 
+router.get("/:boardId/files", requireBoardAccess, getBoardFiles);
+router.post("/:boardId/files", requireBoardAccess, requireEditAccess, saveBoardFiles);
+
 router.post("/:boardId/members", requireBoardAccess, addMember);
 router.delete("/:boardId/members/:userId", requireBoardAccess, removeMember);
 
@@ -24,6 +27,8 @@ router.post("/:boardId/uploads", requireBoardAccess, requireEditAccess, uploadIm
 
 router.post("/:boardId/elements", requireBoardAccess, requireEditAccess, createElement);
 router.post("/:boardId/elements/bulk", requireBoardAccess, requireEditAccess, bulkCreate);
+router.patch("/:boardId/elements", requireBoardAccess, requireEditAccess, batchUpdateElements);
+router.delete("/:boardId/elements", requireBoardAccess, requireEditAccess, batchDeleteElements);
 router.patch("/:boardId/elements/:elementId", requireBoardAccess, requireEditAccess, updateElement);
 router.delete("/:boardId/elements/:elementId", requireBoardAccess, requireEditAccess, deleteElement);
 

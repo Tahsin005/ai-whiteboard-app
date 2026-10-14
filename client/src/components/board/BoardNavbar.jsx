@@ -15,10 +15,16 @@ export function BoardNavbar({
   isConnected,
   collaborators = [],
   camera,
+  zoomPercent: propZoomPercent,
   onZoomChange,
+  onZoomIn,
+  onZoomOut,
   onResetZoom,
 }) {
-  const zoomPercent = Math.round((camera.zoom || 1) * 100);
+  const zoomPercent =
+    propZoomPercent !== undefined
+      ? propZoomPercent
+      : Math.round((camera?.zoom || 1) * 100);
 
   return (
     <header className="navbar navbar-board">
@@ -105,7 +111,7 @@ export function BoardNavbar({
             <button
               type="button"
               className="btn btn-ghost btn-sm board-zoom-btn"
-              onClick={() => onZoomChange?.(camera.zoom - 0.15)}
+              onClick={() => (onZoomOut ? onZoomOut() : onZoomChange?.((camera?.zoom || 1) - 0.15))}
               title="Zoom Out"
             >
               <ZoomOut size={14} />
@@ -123,7 +129,7 @@ export function BoardNavbar({
             <button
               type="button"
               className="btn btn-ghost btn-sm board-zoom-btn"
-              onClick={() => onZoomChange?.(camera.zoom + 0.15)}
+              onClick={() => (onZoomIn ? onZoomIn() : onZoomChange?.((camera?.zoom || 1) + 0.15))}
               title="Zoom In"
             >
               <ZoomIn size={14} />

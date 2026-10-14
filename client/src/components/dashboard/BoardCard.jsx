@@ -39,15 +39,15 @@ export function BoardCard({ board, onDeleteClick }) {
     if (board.background === "dots") {
       return {
         backgroundColor: bg,
-        backgroundImage: "radial-gradient(#94a3b8 1px, transparent 1px)",
-        backgroundSize: "12px 12px",
+        backgroundImage: "radial-gradient(#b0b0b8 1.25px, transparent 1.25px)",
+        backgroundSize: "14px 14px",
       };
     }
     if (board.background === "grid") {
       return {
         backgroundColor: bg,
         backgroundImage:
-          "linear-gradient(to right, #cbd5e1 1px, transparent 1px), linear-gradient(to bottom, #cbd5e1 1px, transparent 1px)",
+          "linear-gradient(to right, #e2e2e8 1px, transparent 1px), linear-gradient(to bottom, #e2e2e8 1px, transparent 1px)",
         backgroundSize: "14px 14px",
       };
     }

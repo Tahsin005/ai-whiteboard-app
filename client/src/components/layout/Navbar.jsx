@@ -24,9 +24,12 @@ export const Navbar = () => {
       <div className="page-container navbar-inner">
         <Link to="/dashboard" className="navbar-brand">
           <div className="navbar-brand-icon">
-            <PenTool size={20} />
+            <PenTool size={18} />
           </div>
-          <span className="navbar-brand-text">CanvasAI</span>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+            <span className="navbar-brand-text">CanvasAI</span>
+            <span className="navbar-brand-tag font-hand">virtual whiteboard</span>
+          </div>
         </Link>
 
         <div className="dropdown-container">

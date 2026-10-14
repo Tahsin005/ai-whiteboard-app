@@ -38,7 +38,17 @@ CREATE TABLE IF NOT EXISTS elements (
     updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_whiteboards_owner  ON whiteboards(owner_id);
-CREATE INDEX IF NOT EXISTS idx_elements_board     ON elements (whiteboard_id);
-CREATE INDEX IF NOT EXISTS idx_members_user       ON whiteboard_members(user_id);
-CREATE INDEX IF NOT EXISTS idx_members_board      ON whiteboard_members (whiteboard_id);
+CREATE TABLE IF NOT EXISTS whiteboard_files (
+    id            TEXT NOT NULL,
+    whiteboard_id UUID NOT NULL REFERENCES whiteboards(id) ON DELETE CASCADE,
+    mime_type     TEXT NOT NULL,
+    data_url      TEXT NOT NULL,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (whiteboard_id, id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_whiteboards_owner        ON whiteboards(owner_id);
+CREATE INDEX IF NOT EXISTS idx_elements_board           ON elements (whiteboard_id);
+CREATE INDEX IF NOT EXISTS idx_members_user             ON whiteboard_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_members_board            ON whiteboard_members (whiteboard_id);
+CREATE INDEX IF NOT EXISTS idx_whiteboard_files_board   ON whiteboard_files (whiteboard_id);

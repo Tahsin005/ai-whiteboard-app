@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
-import { Plus, RefreshCw, AlertCircle } from "lucide-react";
+import { Plus, RefreshCw, AlertCircle, Search } from "lucide-react";
 
 import Navbar from "@/components/layout/Navbar.jsx";
 import api from "@/lib/api.js";
@@ -12,6 +12,7 @@ import DeleteBoardDialog from "@/components/dashboard/DeleteBoardDialog.jsx";
 
 export const DashboardPage = () => {
   const [boards, setBoards] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
@@ -64,6 +65,15 @@ export const DashboardPage = () => {
     setBoards((prev) => prev.filter((b) => b.id !== deletedId));
   };
 
+  const filteredBoards = boards.filter((b) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      b.title?.toLowerCase().includes(q) ||
+      b.description?.toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div className="app-shell">
       <Navbar />
@@ -74,17 +84,45 @@ export const DashboardPage = () => {
             <div className="dashboard-title-row">
               <h1 className="dashboard-title">Whiteboards</h1>
               {!isLoading && (
-                <span className="badge">
+                <span className="badge badge-hand">
                   {boards.length} {boards.length === 1 ? "canvas" : "canvases"}
                 </span>
               )}
             </div>
             <p className="dashboard-subtitle">
-              Create, organize, and collaborate on your real-time visual canvases.
+              Create, organize, and sketch collaborative diagrams with hand-drawn ease.
             </p>
           </div>
 
           <div className="dashboard-header-actions">
+            {!isLoading && boards.length > 0 && (
+              <div style={{ position: "relative", minWidth: "200px" }}>
+                <Search
+                  size={15}
+                  color="#787882"
+                  style={{
+                    position: "absolute",
+                    left: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    pointerEvents: "none",
+                  }}
+                />
+                <input
+                  type="text"
+                  placeholder="Filter canvases..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="form-input"
+                  style={{
+                    paddingLeft: "32px",
+                    height: "36px",
+                    fontSize: "0.875rem",
+                  }}
+                />
+              </div>
+            )}
+
             <button
               type="button"
               className="btn btn-secondary"
@@ -122,14 +160,14 @@ export const DashboardPage = () => {
                 justifyContent: "center",
                 padding: "56px 24px",
                 textAlign: "center",
-                borderRadius: "var(--radius-xl)",
+                borderRadius: "var(--radius-lg)",
                 background: "var(--danger-50)",
                 border: "1px solid var(--danger-100)",
                 maxWidth: "460px",
                 margin: "48px auto",
               }}
             >
-              <AlertCircle size={44} color="#ef4444" style={{ marginBottom: "12px" }} />
+              <AlertCircle size={44} color="#e03131" style={{ marginBottom: "12px" }} />
               <h3 style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--text-main)" }}>
                 Failed to load whiteboards
               </h3>
@@ -157,13 +195,38 @@ export const DashboardPage = () => {
             <div className="boards-grid">
               <NewBoardCard onClick={() => setIsCreateOpen(true)} />
 
-              {boards.map((board) => (
+              {filteredBoards.map((board) => (
                 <BoardCard
                   key={board.id}
                   board={board}
                   onDeleteClick={handlePromptDelete}
                 />
               ))}
+
+              {filteredBoards.length === 0 && searchQuery && (
+                <div
+                  style={{
+                    gridColumn: "1 / -1",
+                    padding: "48px 24px",
+                    textAlign: "center",
+                    background: "#ffffff",
+                    borderRadius: "var(--radius-lg)",
+                    border: "1px dashed var(--border-default)",
+                  }}
+                >
+                  <p className="font-hand" style={{ fontSize: "1.25rem", color: "var(--text-secondary)" }}>
+                    No whiteboards found matching "{searchQuery}"
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-sm"
+                    onClick={() => setSearchQuery("")}
+                    style={{ marginTop: "10px" }}
+                  >
+                    Clear Search
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

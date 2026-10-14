@@ -19,8 +19,8 @@ const BACKGROUND_OPTIONS = [
     description: "Subtle dots for freeform diagrams and sketches",
     icon: CircleDot,
     previewStyle: {
-      backgroundImage: "radial-gradient(#94a3b8 1px, transparent 1px)",
-      backgroundSize: "10px 10px",
+      backgroundImage: "radial-gradient(#b0b0b8 1.25px, transparent 1.25px)",
+      backgroundSize: "12px 12px",
     },
   },
   {
@@ -30,7 +30,7 @@ const BACKGROUND_OPTIONS = [
     icon: Grid,
     previewStyle: {
       backgroundImage:
-        "linear-gradient(to right, #cbd5e1 1px, transparent 1px), linear-gradient(to bottom, #cbd5e1 1px, transparent 1px)",
+        "linear-gradient(to right, #e2e2e8 1px, transparent 1px), linear-gradient(to bottom, #e2e2e8 1px, transparent 1px)",
       backgroundSize: "12px 12px",
     },
   },
@@ -109,7 +109,7 @@ export function CreateBoardDialog({ open, onOpenChange, onBoardCreated }) {
         <DialogPrimitive.Overlay className="modal-backdrop" />
         <DialogPrimitive.Content className="modal-dialog">
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
-            {/* Header */}
+
             <div className="modal-header">
               <div className="modal-header-info">
                 <div className="modal-header-icon">
@@ -130,9 +130,9 @@ export function CreateBoardDialog({ open, onOpenChange, onBoardCreated }) {
               </DialogPrimitive.Close>
             </div>
 
-            {/* Body */}
+
             <div className="modal-body">
-              {/* Board Title */}
+
               <div className="form-group">
                 <label htmlFor="board-title-input" className="form-label">
                   <span>
@@ -152,7 +152,7 @@ export function CreateBoardDialog({ open, onOpenChange, onBoardCreated }) {
                 />
               </div>
 
-              {/* Description */}
+
               <div className="form-group">
                 <label htmlFor="board-desc-input" className="form-label">
                   <span>Description</span>
@@ -168,7 +168,7 @@ export function CreateBoardDialog({ open, onOpenChange, onBoardCreated }) {
                 />
               </div>
 
-              {/* Canvas Background Pattern */}
+
               <div className="form-group">
                 <label className="form-label">Canvas Background Style</label>
                 <div className="pattern-grid">
@@ -189,11 +189,11 @@ export function CreateBoardDialog({ open, onOpenChange, onBoardCreated }) {
                             ...opt.previewStyle,
                           }}
                         >
-                          <Icon size={16} color={isSelected ? "#4f46e5" : "#94a3b8"} />
+                          <Icon size={16} color={isSelected ? "#6965db" : "#94a3b8"} />
                         </div>
                         <div className="pattern-title-row">
                           <span>{opt.label}</span>
-                          {isSelected && <Check size={14} color="#4f46e5" />}
+                          {isSelected && <Check size={14} color="#6965db" />}
                         </div>
                         <span className="pattern-desc">{opt.description}</span>
                       </button>
@@ -202,7 +202,7 @@ export function CreateBoardDialog({ open, onOpenChange, onBoardCreated }) {
                 </div>
               </div>
 
-              {/* Canvas Base Color */}
+
               <div className="form-group">
                 <label className="form-label">Canvas Base Tint</label>
                 <div className="color-swatches-row">
@@ -228,7 +228,7 @@ export function CreateBoardDialog({ open, onOpenChange, onBoardCreated }) {
               </div>
             </div>
 
-            {/* Footer */}
+
             <div className="modal-footer">
               <button
                 type="button"

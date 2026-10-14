@@ -123,6 +123,11 @@ export function useBoardSocket({ boardId, currentUser, onEvent }) {
         socketInstance.on("member:removed", (payload) => {
           onEventRef.current?.("member:removed", payload);
         });
+
+        // Realtime board sync for collaborative store changes
+        socketInstance.on("wb:sync", (payload) => {
+          onEventRef.current?.("wb:sync", payload);
+        });
       } catch (err) {
         console.error("Socket connection initialization error:", err);
       }
@@ -187,6 +192,15 @@ export function useBoardSocket({ boardId, currentUser, onEvent }) {
     [boardId, isConnected]
   );
 
+  // Realtime board sync for collaborative store changes
+  const sendBoardSync = useCallback(
+    (changes) => {
+      if (!socketRef.current || !isConnected) return;
+      socketRef.current.emit("wb:sync", { boardId, changes });
+    },
+    [boardId, isConnected]
+  );
+
   return {
     socket: socketRef.current,
     isConnected,
@@ -194,6 +208,7 @@ export function useBoardSocket({ boardId, currentUser, onEvent }) {
     cursors,
     sendCursor,
     sendLiveElement,
+    sendBoardSync,
   };
 }
 

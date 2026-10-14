@@ -3,6 +3,7 @@ import { emitToBoard } from "../realtime/index.js";
 import ApiError from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { deleteUploadByUrl } from "../utils/fileCleanup.js";
+import { persistWhiteboardFile } from "../utils/fileStorage.js";
 
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
@@ -45,7 +46,7 @@ const createBoard = asyncHandler(async (req, res) => {
 
 
 const getBoard = asyncHandler(async (req, res) => {
-    const [boardRes, elementsRes, membersRes] = await Promise.all([
+    const [boardRes, elementsRes, membersRes, filesRes] = await Promise.all([
         query("SELECT * FROM whiteboards WHERE id = $1", [req.board.id]),
         query(
             "SELECT id, type, data, z, created_by, updated_at FROM elements WHERE whiteboard_id = $1 ORDER BY z ASC",
@@ -63,12 +64,42 @@ const getBoard = asyncHandler(async (req, res) => {
             WHERE m.whiteboard_id = $1`,
             [req.board.id]
         ),
+        query(
+            "SELECT id, mime_type, data_url, created_at FROM whiteboard_files WHERE whiteboard_id = $1",
+            [req.board.id]
+        ),
     ]);
+
+    const files = {};
+    for (const f of filesRes.rows) {
+        files[f.id] = {
+            id: f.id,
+            mimeType: f.mime_type,
+            dataURL: f.data_url,
+            created: new Date(f.created_at).getTime(),
+        };
+    }
+
+    // Fallback: recover files from element.data if not yet in whiteboard_files table
+    for (const el of elementsRes.rows) {
+        const d = el.data || {};
+        const fileId = d.fileId || (el.type === "image" ? el.id : null);
+        const dataURL = d.dataURL || d.src;
+        if (fileId && dataURL && !files[fileId]) {
+            files[fileId] = {
+                id: fileId,
+                mimeType: d.mimeType || "image/png",
+                dataURL,
+                created: d.created || Date.now(),
+            };
+        }
+    }
 
     res.json({
         board: { ...boardRes.rows[0], role: req.board.role },
         elements: elementsRes.rows,
         members: membersRes.rows,
+        files,
     });
 });
 
@@ -118,8 +149,13 @@ const deleteBoard = asyncHandler(async (req, res) => {
         "SELECT data FROM elements WHERE whiteboard_id = $1 AND type = 'image'",
         [req.board.id]
     );
+    const files = await query(
+        "SELECT data_url FROM whiteboard_files WHERE whiteboard_id = $1",
+        [req.board.id]
+    );
     await query("DELETE FROM whiteboards WHERE id = $1", [req.board.id]);
-    imgs.rows.forEach((r) => deleteUploadByUrl(r.data?.src));
+    imgs.rows.forEach((r) => deleteUploadByUrl(r.data?.src || r.data?.dataURL));
+    files.rows.forEach((r) => deleteUploadByUrl(r.data_url));
     res.json({ success: true });
 });
 
@@ -158,4 +194,59 @@ const removeMember = asyncHandler(async(req, res) => {
     res.json({ success: true });
 });
 
-export { listBoards, createBoard, getBoard, updateBoard, deleteBoard, addMember, removeMember };
+const saveBoardFiles = asyncHandler(async (req, res) => {
+    const incoming = Array.isArray(req.body.files)
+        ? req.body.files
+        : req.body.files && typeof req.body.files === "object"
+        ? Object.values(req.body.files)
+        : [];
+
+    if (!incoming.length) {
+        return res.json({ success: true, saved: [] });
+    }
+
+    const saved = [];
+    for (const f of incoming) {
+        if (!f || !f.id || (!f.dataURL && !f.data_url && !f.src)) continue;
+        const fileId = f.id;
+        const mimeType = f.mimeType || f.mime_type || "image/png";
+        const dataUrl = f.dataURL || f.data_url || f.src;
+
+        const persisted = await persistWhiteboardFile(req.board.id, fileId, mimeType, dataUrl);
+        if (persisted) {
+            saved.push(persisted);
+            emitToBoard(req.board.id, "file:created", persisted, req.get("x-socket-id"));
+        }
+    }
+
+    res.status(201).json({ success: true, files: saved });
+});
+
+const getBoardFiles = asyncHandler(async (req, res) => {
+    const { rows } = await query(
+        "SELECT id, mime_type, data_url, created_at FROM whiteboard_files WHERE whiteboard_id = $1",
+        [req.board.id]
+    );
+    const files = {};
+    for (const f of rows) {
+        files[f.id] = {
+            id: f.id,
+            mimeType: f.mime_type,
+            dataURL: f.data_url,
+            created: new Date(f.created_at).getTime(),
+        };
+    }
+    res.json({ files });
+});
+
+export {
+    listBoards,
+    createBoard,
+    getBoard,
+    updateBoard,
+    deleteBoard,
+    addMember,
+    removeMember,
+    saveBoardFiles,
+    getBoardFiles,
+};

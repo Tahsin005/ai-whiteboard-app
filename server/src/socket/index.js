@@ -91,6 +91,10 @@ const initSocket = (httpServer) => {
             socket.to(boardRoom(boardId)).emit("element:live", { element, by: user.id });
         });
 
+        socket.on("wb:sync", ({ boardId, changes }) => {
+            socket.to(boardRoom(boardId)).emit("wb:sync", { changes, by: user.id });
+        });
+
         socket.on("disconnecting", () => {
             for (const room of socket.rooms) {
                 if (room === socket.id) continue;
